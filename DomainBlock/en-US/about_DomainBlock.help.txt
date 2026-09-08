@@ -45,8 +45,8 @@ LONG DESCRIPTION
     Invoke-DomainBlockWorkflow   Run an Apply, Refresh, or Remove sequence
 
   SEQUENCES
-    Do not run every command in one pass. Block and Unblock cancel each other,
-    and the Outliers scripts are unrelated. The useful sequences are:
+    Do not run every command in one pass. Block and Unblock cancel each other.
+    The useful sequences are:
 
         Apply    Backup-HostsFile -> Block-Domain -> Test-DomainBlock
         Refresh  Update-DomainFirewallBlock -> Test-DomainBlock

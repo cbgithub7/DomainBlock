@@ -5,7 +5,7 @@ function Invoke-DomainBlockWorkflow {
 
     .DESCRIPTION
         Do not run every toolkit command in one pass. Block and Unblock cancel
-        each other, Restore undoes Backup, and the Outliers scripts are unrelated.
+        each other, and Restore undoes Backup.
 
         These three sequences are the useful ones:
 

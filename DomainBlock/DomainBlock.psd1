@@ -1,6 +1,6 @@
 @{
     RootModule           = 'DomainBlock.psm1'
-    ModuleVersion        = '1.0.0'
+    ModuleVersion        = '1.0.1'
     GUID                 = '9a29d6ef-eca1-461d-96fd-6284a381f01c'
     Author               = 'Cody'
     CompanyName          = 'cbgithub7'
@@ -31,7 +31,7 @@
             Tags         = @('Windows', 'Firewall', 'Hosts', 'Networking', 'DomainBlock', 'Security')
             LicenseUri   = 'https://opensource.org/licenses/MIT'
             ProjectUri   = 'https://github.com/cbgithub7/PowerScripts-Assorted-Utilities'
-            ReleaseNotes = 'DomainBlock 1.0.0: hosts and firewall domain blocking module, workflow runner, tests, and isolated outlier utilities.'
+            ReleaseNotes = 'DomainBlock 1.0.1: public tree is the DomainBlock module only.'
         }
     }
 }

@@ -1,7 +1,7 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-    Runs the DomainBlock and Outliers self-tests.
+    Runs the DomainBlock self-tests.
 
 .PARAMETER LiveFirewall
     Also run firewall tests. Requires an elevated session.
@@ -185,20 +185,6 @@ try {
     Assert-True ($afterWf.Count -eq 0) 'Remove workflow cleared the domain'
 } finally {
     Remove-Item -LiteralPath $work -Recurse -Force -ErrorAction SilentlyContinue
-}
-
-Write-Host "`nOutliers"
-$diag = & (Join-Path $repoRoot 'Outliers\Invoke-NetworkDiagnostics.ps1') -ComputerName '127.0.0.1' -PingCount 1 -SkipTraceRoute
-Assert-True ([bool]$diag.PingSucceeded) 'Invoke-NetworkDiagnostics pings loopback'
-Assert-True (-not $diag.TraceRouteRan) '-SkipTraceRoute is honored'
-
-$tempFile = Join-Path $env:TEMP ("DomainBlock.File." + [guid]::NewGuid().ToString('N') + '.txt')
-Set-Content -LiteralPath $tempFile -Value 'not locked'
-try {
-    $null = & (Join-Path $repoRoot 'Outliers\Remove-LockedFile.ps1') -Path $tempFile -WhatIf
-    Assert-True (Test-Path -LiteralPath $tempFile) 'Remove-LockedFile -WhatIf does not delete'
-} finally {
-    Remove-Item -LiteralPath $tempFile -Force -ErrorAction SilentlyContinue
 }
 
 if ($LiveFirewall) {

@@ -1,6 +1,6 @@
 # PowerScripts-Assorted-Utilities
 
-Windows PowerShell toolkit for **blocking and inspecting domains** via the hosts file and Windows Firewall, plus a few unrelated utilities under `Outliers`.
+Windows PowerShell **DomainBlock** toolkit for blocking and inspecting domains via the hosts file and Windows Firewall.
 
 Requires Windows PowerShell 5.1 or PowerShell 7 on Windows. Changing the system hosts file or firewall rules needs an elevated session.
 
@@ -49,7 +49,7 @@ Get-Help Block-Domain -Examples
 
 ### Sequences
 
-Running every command in order is not useful: `Block-Domain` and `Unblock-Domain` cancel each other, `Restore-HostsFile` undoes a backup, and the Outliers scripts do not belong in this pipeline.
+Running every command in order is not useful: `Block-Domain` and `Unblock-Domain` cancel each other, and `Restore-HostsFile` undoes a backup.
 
 The sequences that *are* worth chaining, each step waiting for the previous to finish:
 
@@ -75,16 +75,6 @@ Use the individual commands when you need a single step (`Get-BlockedDomain`, `F
 Block-Domain -Path .\examples\DomainList.txt -Method Hosts -WhatIf
 Get-Content .\list.txt | ConvertTo-DomainListLiteral
 ```
-
-## Outliers
-
-Unrelated scripts from the original collection, kept out of the module. See [Outliers/README.md](Outliers/README.md).
-
-| Script | Purpose |
-| --- | --- |
-| `Outliers/Remove-LockedFile.ps1` | Restart Manager lock check, optional process kill, recycle/delete |
-| `Outliers/Get-DeviceMacInfo.ps1` | Neighbor IP/MAC inventory (optional vendor lookup) |
-| `Outliers/Invoke-NetworkDiagnostics.ps1` | Ping, DNS, traceroute |
 
 ## Tests
 

@@ -21,3 +21,7 @@ tests/tmp/
 *.pfx
 .env
 *.snk
+
+# Local-only utilities (not published)
+/Outliers/
+/README.private.md

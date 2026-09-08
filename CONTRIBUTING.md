@@ -6,7 +6,6 @@
 | --- | --- |
 | `DomainBlock/` | PowerShell module (public cmdlets in `Public/`, helpers in `Private/`) |
 | `examples/` | Sample domain lists |
-| `Outliers/` | Unrelated utilities, not part of the module |
 | `tests/` | Self-tests |
 
 Public files are named after the function they define (`Block-Domain.ps1` exports `Block-Domain`). Use approved PowerShell verbs and PascalCase for identifiers. Three-letter acronyms use Pascal case (`Mac`, not `MAC`).
