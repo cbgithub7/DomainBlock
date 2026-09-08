@@ -1,10 +1,8 @@
-# PowerScripts-Assorted-Utilities
+# DomainBlock
 
-Windows PowerShell **DomainBlock** toolkit for blocking and inspecting domains via the hosts file and Windows Firewall.
+Windows PowerShell toolkit for blocking and inspecting domains via the hosts file and Windows Firewall.
 
 Requires Windows PowerShell 5.1 or PowerShell 7 on Windows. Changing the system hosts file or firewall rules needs an elevated session.
-
-## DomainBlock
 
 ```powershell
 Import-Module .\DomainBlock

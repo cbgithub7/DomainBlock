@@ -4,6 +4,7 @@
 
 - Keep local-only utilities out of the public tree.
 - Public README covers DomainBlock only.
+- Repository renamed from PowerScripts-Assorted-Utilities to DomainBlock.
 
 ## 1.0.0 - 2026-09-08
 

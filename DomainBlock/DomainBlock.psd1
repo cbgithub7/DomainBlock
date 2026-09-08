@@ -30,7 +30,7 @@
         PSData = @{
             Tags         = @('Windows', 'Firewall', 'Hosts', 'Networking', 'DomainBlock', 'Security')
             LicenseUri   = 'https://opensource.org/licenses/MIT'
-            ProjectUri   = 'https://github.com/cbgithub7/PowerScripts-Assorted-Utilities'
+            ProjectUri   = 'https://github.com/cbgithub7/DomainBlock'
             ReleaseNotes = 'DomainBlock 1.0.1: public tree is the DomainBlock module only.'
         }
     }
