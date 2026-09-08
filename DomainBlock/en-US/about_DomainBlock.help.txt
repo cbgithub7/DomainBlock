@@ -1,0 +1,70 @@
+TOPIC
+    about_DomainBlock
+
+SHORT DESCRIPTION
+    Block, unblock, list, test, and refresh domain blocks on Windows using the
+    hosts file and Windows Firewall.
+
+LONG DESCRIPTION
+    DomainBlock is a Windows-only toolkit. It tags the entries it creates so
+    later commands can list, update, and remove them without touching unrelated
+    hosts lines or firewall rules.
+
+    Hosts-file blocks map a name to 127.0.0.1 and ::1:
+
+        127.0.0.1 ads.example.com # DomainBlock
+        ::1 ads.example.com # DomainBlock
+
+    Firewall blocks are outbound (by default) rules named per domain and IP,
+    grouped as DomainBlock. Those IPs go stale when CDNs rotate; run
+    Update-DomainFirewallBlock to refresh them.
+
+    This is not a substitute for DNS filtering or DoH policy. Browsers using
+    DNS-over-HTTPS, VPNs, and apps that ignore the system hosts file can bypass
+    hosts blocks. Firewall IP rules only match the addresses resolved at
+    creation (or last refresh) time.
+
+  REQUIREMENTS
+    - Windows PowerShell 5.1 or PowerShell 7 on Windows
+    - Elevation for changing the system hosts file or firewall rules
+    - The NetSecurity module (Get-NetFirewallRule) for firewall commands
+
+  COMMANDS
+    Block-Domain                 Add hosts and/or firewall blocks
+    Unblock-Domain               Remove them
+    Get-BlockedDomain            List toolkit-managed blocks
+    Test-DomainBlock             Hosts + firewall + loopback DNS view
+    Update-DomainFirewallBlock   Re-resolve DNS and sync firewall IPs
+    Find-FirewallDomainRule      Search any firewall rule covering a domain
+    Get-DomainIPAddress          Resolve A/AAAA addresses
+    ConvertTo-DomainListLiteral  Column of names -> @("a", "b")
+    Backup-HostsFile             Timestamped copy under Documents\DomainBlock
+    Restore-HostsFile            Replace hosts with a backup
+    Export-BlockedDomain         Write names to txt or json
+    Import-BlockedDomain         Block every name in a list file
+    Invoke-DomainBlockWorkflow   Run an Apply, Refresh, or Remove sequence
+
+  SEQUENCES
+    Do not run every command in one pass. Block and Unblock cancel each other,
+    and the Outliers scripts are unrelated. The useful sequences are:
+
+        Apply    Backup-HostsFile -> Block-Domain -> Test-DomainBlock
+        Refresh  Update-DomainFirewallBlock -> Test-DomainBlock
+        Remove   Backup-HostsFile -> Unblock-Domain -> Test-DomainBlock
+
+        Invoke-DomainBlockWorkflow -Action Apply -Name ads.example.com
+        Invoke-DomainBlockWorkflow -Action Refresh
+        Invoke-DomainBlockWorkflow -Action Remove -Name ads.example.com
+
+QUICK START
+    Import-Module .\DomainBlock
+
+    Invoke-DomainBlockWorkflow -Action Apply -Name ads.example.com -Method Hosts
+    Get-BlockedDomain
+    Invoke-DomainBlockWorkflow -Action Remove -Name ads.example.com -Method Hosts
+
+SEE ALSO
+    Block-Domain
+    Get-BlockedDomain
+    Test-NetConnection
+    Get-NetFirewallRule

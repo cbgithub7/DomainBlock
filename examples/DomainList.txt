@@ -1,0 +1,6 @@
+# DomainBlock list file — one domain per line.
+# Lines starting with # are ignored.
+# Replace these placeholders before importing.
+
+# ads.example.com
+# tracker.example.net

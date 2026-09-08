@@ -1,29 +1,99 @@
 # PowerScripts-Assorted-Utilities
 
-Welcome to my personal repository of assorted PowerShell scripts! This repository contains a collection of PowerShell scripts that I've created for various utility tasks that came up at one time or another, or were just constructed for fun.
+Windows PowerShell toolkit for **blocking and inspecting domains** via the hosts file and Windows Firewall, plus a few unrelated utilities under `Outliers`.
 
-## Scripts Overview
+Requires Windows PowerShell 5.1 or PowerShell 7 on Windows. Changing the system hosts file or firewall rules needs an elevated session.
 
-Here's a brief overview of the scripts available in this repository:
+## DomainBlock
 
-1. **CheckFileInUse.ps1**: This script checks if a specified file is currently in use by any process. It provides options to terminate processes using the file and delete the file, sending it to the Recycle Bin if desired.
+```powershell
+Import-Module .\DomainBlock
 
-2. **BlockDomainsInFirewall.ps1**: This script blocks traffic to specified domains by creating outbound firewall rules for each domain's associated IP addresses.
+Invoke-DomainBlockWorkflow -Action Apply -Name ads.example.com -Method Hosts
+Get-BlockedDomain
+Invoke-DomainBlockWorkflow -Action Remove -Name ads.example.com -Method Hosts
+```
 
-3. **BlockDomainsInHostsFile.ps1**: This script blocks specified domains by adding entries to the hosts file, redirecting them to the loopback address (127.0.0.1).
+Hosts entries look like:
 
-4. **FormatHostsFileEntries.ps1**: This script reformats a column-based (multiline) input into a single line, comma-separated format with double quotes around each element, suitable for hosts file entries.
+```
+127.0.0.1 ads.example.com # DomainBlock
+::1 ads.example.com # DomainBlock
+```
 
-5. **GetMACAddresses.ps1**: This script retrieves a list of IP and MAC addresses from the ARP cache, filtering out local and known devices, and categorizes MAC addresses as unicast, multicast, or broadcast.
+Firewall rules are named per domain and IP, grouped as `DomainBlock`. Re-running `Block-Domain` does not create duplicates.
 
-6. **SearchFirewallRulesForDomain.ps1**: This script searches non-default firewall rules for a specified domain, matching the resolved IP addresses against the IP scopes of the rules.
+Firewall IP blocks go stale when CDNs rotate addresses. Refresh them with `Update-DomainFirewallBlock`. Hosts-file blocks can be bypassed by DNS-over-HTTPS, VPNs, or apps that ignore the system resolver.
 
-Feel free to explore and use these scripts for your own purposes.
+### Commands
 
-## Usage
+| Command | Purpose |
+| --- | --- |
+| `Block-Domain` | Block via hosts, firewall, or both |
+| `Unblock-Domain` | Remove toolkit-managed blocks |
+| `Get-BlockedDomain` | List what this module created |
+| `Test-DomainBlock` | Hosts + firewall + loopback DNS view |
+| `Update-DomainFirewallBlock` | Re-resolve DNS and sync firewall IPs |
+| `Find-FirewallDomainRule` | Search *any* firewall rule covering a domain's IPs |
+| `Get-DomainIPAddress` | Resolve A/AAAA addresses |
+| `ConvertTo-DomainListLiteral` | Column of names → `@("a", "b")` |
+| `Backup-HostsFile` / `Restore-HostsFile` | Timestamped hosts backups under `Documents\DomainBlock` |
+| `Export-BlockedDomain` / `Import-BlockedDomain` | Text or JSON domain lists |
+| `Invoke-DomainBlockWorkflow` | Run Apply, Refresh, or Remove as a sequence |
 
-To use any of the scripts in this repository, simply clone or download the repository to your local machine and run the scripts using PowerShell. Make sure to read the script comments and documentation for specific usage instructions.
+```powershell
+Get-Help about_DomainBlock
+Get-Command -Module DomainBlock
+Get-Help Block-Domain -Examples
+```
+
+### Sequences
+
+Running every command in order is not useful: `Block-Domain` and `Unblock-Domain` cancel each other, `Restore-HostsFile` undoes a backup, and the Outliers scripts do not belong in this pipeline.
+
+The sequences that *are* worth chaining, each step waiting for the previous to finish:
+
+| Action | Steps |
+| --- | --- |
+| Apply | `Backup-HostsFile` → `Block-Domain` → `Test-DomainBlock` |
+| Refresh | `Update-DomainFirewallBlock` → `Test-DomainBlock` |
+| Remove | `Backup-HostsFile` → `Unblock-Domain` → `Test-DomainBlock` |
+
+```powershell
+Invoke-DomainBlockWorkflow -Action Apply -Path .\examples\DomainList.txt -Method Hosts
+Invoke-DomainBlockWorkflow -Action Refresh
+Invoke-DomainBlockWorkflow -Action Remove -Name ads.example.com
+```
+
+Use the individual commands when you need a single step (`Get-BlockedDomain`, `Find-FirewallDomainRule`, export/import, restore).
+
+### Lists
+
+`examples/DomainList.txt` is a commented template. One domain per line; `#` comments are ignored. JSON from `Export-BlockedDomain` is also accepted.
+
+```powershell
+Block-Domain -Path .\examples\DomainList.txt -Method Hosts -WhatIf
+Get-Content .\list.txt | ConvertTo-DomainListLiteral
+```
+
+## Outliers
+
+Unrelated scripts from the original collection, kept out of the module. See [Outliers/README.md](Outliers/README.md).
+
+| Script | Purpose |
+| --- | --- |
+| `Outliers/Remove-LockedFile.ps1` | Restart Manager lock check, optional process kill, recycle/delete |
+| `Outliers/Get-DeviceMacInfo.ps1` | Neighbor IP/MAC inventory (optional vendor lookup) |
+| `Outliers/Invoke-NetworkDiagnostics.ps1` | Ping, DNS, traceroute |
+
+## Tests
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\Invoke-DomainBlockTest.ps1
+```
+
+Hosts-file tests use a temp file and do not require elevation. Firewall live tests are skipped unless you pass `-LiveFirewall` in an elevated session.
 
 ## License
 
-This repository is licensed under the [MIT License](LICENSE).
+MIT. See [LICENSE](LICENSE).
