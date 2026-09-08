@@ -17,6 +17,6 @@ Public files are named after the function they define (`Block-Domain.ps1` export
 pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\Invoke-DomainBlockTest.ps1
 ```
 
-Hosts-file tests use a temp file and do not need elevation. Pass `-LiveFirewall` in an elevated session to include firewall checks.
+Hosts-file tests use a temp file and do not need elevation. Pass `-LiveFirewall` in an elevated session to include firewall checks. The same script runs on `push` and `pull_request` via `.github/workflows/test.yml`.
 
 Do not commit credentials, tokens, or hosts-file backups.

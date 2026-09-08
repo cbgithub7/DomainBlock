@@ -8,4 +8,5 @@ First DomainBlock toolkit release.
 - Add `Invoke-DomainBlockWorkflow` for Apply, Refresh, and Remove sequences.
 - Isolate unrelated utilities under `Outliers/` with approved Verb-Noun names.
 - Add self-tests in `tests/Invoke-DomainBlockTest.ps1`.
+- Add GitHub Actions (`Test` workflow) to run those tests on Windows.
 
